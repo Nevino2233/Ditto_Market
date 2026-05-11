@@ -1,0 +1,19 @@
+{
+  "banner": [
+    {
+      "appId": "com.ditto.notes",
+      "image": "banner/notes.png",
+      "title": "Ditto Notes — 轻量笔记",
+      "subtitle": "简洁高效的笔记应用，支持 Markdown 和实时同步"
+    },
+    {
+      "appId": "com.ditto.canvas",
+      "image": "banner/canvas.png",
+      "title": "Ditto Canvas — 创意画板",
+      "subtitle": "释放你的创造力，专业级绘图体验"
+    }
+  ],
+  "editorsChoice": ["com.ditto.notes", "com.ditto.canvas"],
+  "newApps": ["com.ditto.weather", "com.ditto.canvas"],
+  "topRated": ["com.ditto.notes"]
+}

@@ -1,0 +1,11 @@
+[
+  { "id": "productivity", "name": "效率工具", "icon": "📊", "description": "提升工作效率的工具应用" },
+  { "id": "social", "name": "社交", "icon": "💬", "description": "社交和通讯应用" },
+  { "id": "entertainment", "name": "娱乐", "icon": "🎮", "description": "游戏和娱乐应用" },
+  { "id": "development", "name": "开发工具", "icon": "🛠️", "description": "开发者工具和IDE" },
+  { "id": "theme", "name": "主题", "icon": "🎨", "description": "桌面主题和外观定制" },
+  { "id": "widget", "name": "小组件", "icon": "📱", "description": "桌面小组件和快捷工具" },
+  { "id": "plugin", "name": "插件", "icon": "🔌", "description": "系统增强和功能扩展插件" },
+  { "id": "education", "name": "教育", "icon": "📚", "description": "学习和教育应用" },
+  { "id": "utility", "name": "系统工具", "icon": "⚙️", "description": "系统管理和实用工具" }
+]

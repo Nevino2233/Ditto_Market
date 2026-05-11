@@ -1,0 +1,31 @@
+{
+  "id": "com.ditto.canvas",
+  "name": "Ditto Canvas",
+  "version": "0.1.0",
+  "description": "创意画板应用",
+  "icon": "🎨",
+  "entry": "index.html",
+  "category": "entertainment",
+  "sandbox": "trusted",
+  "permissions": ["storage"],
+  "window": {
+    "width": 900,
+    "height": 640,
+    "minWidth": 640,
+    "minHeight": 480,
+    "resizable": true,
+    "maximizable": true
+  },
+  "market": {
+    "summary": "专业级创意画板，释放你的创造力",
+    "description": "# Ditto Canvas\n\n一款功能丰富的创意画板应用。\n\n## 特性\n\n- **多种画笔** — 铅笔、毛笔、马克笔、橡皮擦\n- **颜色面板** — HSL 色轮 + 自定义调色板\n- **图层系统** — 支持多图层编辑和混合\n- **撤销重做** — 无限撤销/重做历史\n- **导出格式** — PNG、SVG、PDF\n\n## 快捷键\n\n- `Ctrl+Z` 撤销\n- `Ctrl+Shift+Z` 重做\n- `Ctrl+S` 保存\n- `B` 画笔工具\n- `E` 橡皮擦",
+    "category": "entertainment",
+    "tags": ["画板", "绘图", "创意", "设计"],
+    "screenshots": ["screenshots/01.png"],
+    "changelog": "changelog.md",
+    "downloadUrl": "https://github.com/Nevino2233/Ditto_Market/releases/download/v0.1.0/com.ditto.canvas.dit",
+    "publisher": "Ditto Team",
+    "homepage": "https://github.com/Nevino2233/Ditto",
+    "sourceUrl": "https://github.com/Nevino2233/Ditto"
+  }
+}

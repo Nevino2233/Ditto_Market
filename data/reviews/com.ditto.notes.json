@@ -1,0 +1,5 @@
+[
+  { "userId": "github:alice", "rating": 5, "comment": "非常好用的笔记应用，Markdown 支持很棒！", "version": "0.1.0", "createdAt": "2026-05-01T10:30:00Z" },
+  { "userId": "github:bob", "rating": 4, "comment": "界面简洁，启动速度快，希望能增加标签功能。", "version": "0.1.0", "createdAt": "2026-05-03T14:20:00Z" },
+  { "userId": "github:charlie", "rating": 5, "comment": "终于有一个好用的 WebOS 笔记了！", "version": "0.1.0", "createdAt": "2026-05-05T09:15:00Z" }
+]

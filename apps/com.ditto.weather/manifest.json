@@ -1,0 +1,31 @@
+{
+  "id": "com.ditto.weather",
+  "name": "Ditto Weather",
+  "version": "0.1.0",
+  "description": "天气预报小组件",
+  "icon": "🌤️",
+  "entry": "index.html",
+  "category": "widget",
+  "sandbox": "trusted",
+  "permissions": ["network"],
+  "window": {
+    "width": 360,
+    "height": 480,
+    "minWidth": 280,
+    "minHeight": 400,
+    "resizable": true,
+    "maximizable": false
+  },
+  "market": {
+    "summary": "精美的天气预报小组件",
+    "description": "# Ditto Weather\n\n一款为 Ditto WebOS 设计的天气小组件。\n\n## 特性\n\n- **实时天气** — 自动定位，实时温度和天气\n- **7日预报** — 未来一周天气趋势\n- **空气质量** — PM2.5 和 AQI 指数\n- **动态背景** — 天气状态自适应背景动画\n- **多城市** — 支持添加多个城市",
+    "category": "widget",
+    "tags": ["天气", "小组件", "预报", "生活"],
+    "screenshots": [],
+    "changelog": "changelog.md",
+    "downloadUrl": "https://github.com/Nevino2233/Ditto_Market/releases/download/v0.1.0/com.ditto.weather.dit",
+    "publisher": "Ditto Team",
+    "homepage": "https://github.com/Nevino2233/Ditto",
+    "sourceUrl": "https://github.com/Nevino2233/Ditto"
+  }
+}

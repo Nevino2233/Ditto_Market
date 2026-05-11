@@ -1,0 +1,4 @@
+[
+  { "userId": "github:dave", "rating": 5, "comment": "画笔效果很流畅，适合快速草图！", "version": "0.1.0", "createdAt": "2026-05-02T16:45:00Z" },
+  { "userId": "github:eve", "rating": 4, "comment": "功能丰富，期待更多笔刷。", "version": "0.1.0", "createdAt": "2026-05-04T11:30:00Z" }
+]
