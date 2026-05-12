@@ -4,10 +4,11 @@
   "version": "0.1.0",
   "description": "轻量级 Markdown 笔记应用",
   "icon": "📝",
-  "entry": "index.html",
+  "entry": "frontend/index.html",
   "category": "productivity",
   "sandbox": "trusted",
   "permissions": ["storage"],
+  "type": "app",
   "window": {
     "width": 720,
     "height": 540,
@@ -16,14 +17,19 @@
     "resizable": true,
     "maximizable": true
   },
+  "backend": {
+    "entry": "backend/index.ts",
+    "type": "cell",
+    "healthCheck": "/health"
+  },
   "market": {
     "summary": "简洁高效的 Markdown 笔记应用",
-    "description": "# Ditto Notes\n\n一款为 Ditto WebOS 设计的轻量级笔记应用。\n\n## 特性\n\n- **Markdown 编辑** — 实时预览，所见即所得\n- **快速搜索** — 全文搜索，瞬间找到笔记\n- **标签管理** — 灵活的标签分类系统\n- **自动保存** — 编辑即保存，永不丢失\n- **轻量快速** — 启动时间 < 100ms\n\n## 使用方法\n\n1. 点击新建笔记\n2. 使用 Markdown 语法编写\n3. 右侧实时预览效果\n4. 通过标签组织笔记\n\n> 数据存储在本地，保护你的隐私。",
+    "description": "# Ditto Notes\n\n一款为 Ditto WebOS 设计的轻量级笔记应用。\n\n## 特性\n\n- **Markdown 编辑** — 实时预览，所见即所得\n- **快速搜索** — 全文搜索，瞬间找到笔记\n- **标签管理** — 灵活的标签分类系统\n- **自动保存** — 编辑即保存，永不丢失\n\n> 数据存储在本地，保护你的隐私。",
     "category": "productivity",
     "tags": ["笔记", "Markdown", "效率", "编辑器"],
     "screenshots": ["screenshots/01.png", "screenshots/02.png"],
     "changelog": "changelog.md",
-    "downloadUrl": "https://github.com/Nevino2233/Ditto_Market/releases/download/v0.1.0/com.ditto.notes.dit",
+    "downloadUrl": "https://github.com/Nevino2233/Ditto_Market/releases/download/v0.1.0/com.ditto.notes-0.1.0.dit",
     "publisher": "Ditto Team",
     "homepage": "https://github.com/Nevino2233/Ditto",
     "sourceUrl": "https://github.com/Nevino2233/Ditto"

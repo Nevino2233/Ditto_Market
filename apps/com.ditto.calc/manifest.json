@@ -1,0 +1,32 @@
+{
+  "id": "com.ditto.calc",
+  "name": "Ditto Calculator",
+  "version": "1.0.0",
+  "description": "简洁美观的科学计算器",
+  "icon": "🧮",
+  "entry": "frontend/index.html",
+  "category": "utility",
+  "sandbox": "trusted",
+  "permissions": [],
+  "type": "app",
+  "window": {
+    "width": 360,
+    "height": 520,
+    "minWidth": 280,
+    "minHeight": 400,
+    "resizable": true,
+    "maximizable": true
+  },
+  "market": {
+    "summary": "简洁美观的科学计算器，支持键盘操作",
+    "description": "# Ditto Calculator\n\n简洁美观的科学计算器应用。\n\n## 特性\n\n- **基础运算** — 加减乘除\n- **括号支持** — 复杂表达式计算\n- **键盘操作** — 支持键盘快捷输入\n- **历史记录** — 自动保存计算历史\n- **暗色主题** — 护眼深色界面",
+    "category": "utility",
+    "tags": ["计算器", "工具", "数学", "效率"],
+    "screenshots": ["screenshots/01.png"],
+    "changelog": "changelog.md",
+    "downloadUrl": "https://github.com/Nevino2233/Ditto_Market/releases/download/v1.0.0/com.ditto.calc-1.0.0.dit",
+    "publisher": "Ditto Team",
+    "homepage": "https://github.com/Nevino2233/Ditto",
+    "sourceUrl": "https://github.com/Nevino2233/Ditto"
+  }
+}

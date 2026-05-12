@@ -1,0 +1,32 @@
+{
+  "id": "com.ditto.theme.midnight",
+  "name": "Midnight Theme",
+  "version": "1.0.0",
+  "description": "优雅的午夜深色主题",
+  "icon": "🌙",
+  "entry": "frontend/index.html",
+  "category": "theme",
+  "sandbox": "trusted",
+  "permissions": [],
+  "type": "theme",
+  "window": {
+    "width": 480,
+    "height": 400,
+    "minWidth": 360,
+    "minHeight": 300,
+    "resizable": true,
+    "maximizable": true
+  },
+  "market": {
+    "summary": "优雅的午夜深色主题，护眼配色",
+    "description": "# Midnight Theme\n\n为 Ditto WebOS 设计的优雅深色主题。\n\n## 特性\n\n- 护眼深色配色\n- 平滑过渡动画\n- 自定义强调色\n- 兼容所有内置应用",
+    "category": "theme",
+    "tags": ["主题", "深色", "外观", "定制"],
+    "screenshots": ["screenshots/01.png"],
+    "changelog": "changelog.md",
+    "downloadUrl": "https://github.com/Nevino2233/Ditto_Market/releases/download/v1.0.0/com.ditto.theme.midnight-1.0.0.ditz",
+    "publisher": "Ditto Team",
+    "homepage": "https://github.com/Nevino2233/Ditto",
+    "sourceUrl": "https://github.com/Nevino2233/Ditto"
+  }
+}
