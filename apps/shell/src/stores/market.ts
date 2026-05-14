@@ -58,7 +58,10 @@ export const useMarketStore = defineStore('market', () => {
     try {
       const res = await fetch(`${serverUrl}/api/market/categories`);
       if (res.ok) categories.value = await res.json();
-    } catch {}
+      else console.warn('[Market] fetchCategories failed:', res.status, res.statusText);
+    } catch (e) {
+      console.warn('[Market] fetchCategories error:', e);
+    }
   }
 
   async function fetchFeatured() {
@@ -90,7 +93,9 @@ export const useMarketStore = defineStore('market', () => {
           await Promise.all(promises);
         }
       }
-    } catch {}
+    } catch (e) {
+      console.warn('[Market] fetchFeatured error:', e);
+    }
   }
 
   async function fetchApps() {
@@ -178,7 +183,9 @@ export const useMarketStore = defineStore('market', () => {
         const data = await res.json();
         installedApps.value = data.apps ?? [];
       }
-    } catch {}
+    } catch (e) {
+      console.warn('[Market] fetchInstalled error:', e);
+    }
   }
 
   async function fetchUpdates() {
@@ -188,7 +195,9 @@ export const useMarketStore = defineStore('market', () => {
         const data = await res.json();
         updatesAvailable.value = data.updates ?? [];
       }
-    } catch {}
+    } catch (e) {
+      console.warn('[Market] fetchUpdates error:', e);
+    }
   }
 
   function navigate(view: MarketView, appId?: string) {

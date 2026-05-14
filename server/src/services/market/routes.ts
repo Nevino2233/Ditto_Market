@@ -1003,7 +1003,9 @@ export function createMarketRoutes(deps: MarketRouteDeps): Hono {
             if (!nameMatch && !descMatch && !tagMatch) continue;
           }
           entries.push(entry);
-        } catch {}
+        } catch (e) {
+          console.error(`[Market] Failed to build entry for ${appId}:`, e instanceof Error ? e.message : e);
+        }
       }
 
       switch (sort) {

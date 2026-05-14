@@ -109,13 +109,18 @@ app.route('/api/cell', createCellRoutes({
   elasticScaler,
 }));
 app.route('/api/apps', createInstallRoutes(cellManager, appsDir));
-app.route('/api/market', createMarketRoutes({
-  cellManager,
-  appsDir,
-  testAppsDir: process.env.TEST_APPS_DIR ?? path.resolve(process.cwd(), '..', 'test-apps'),
-  githubToken: process.env.GITHUB_TOKEN,
-  localDataDir: process.env.MARKET_DATA_DIR,
-}));
+try {
+  app.route('/api/market', createMarketRoutes({
+    cellManager,
+    appsDir,
+    testAppsDir: process.env.TEST_APPS_DIR ?? path.resolve(process.cwd(), '..', 'test-apps'),
+    githubToken: process.env.GITHUB_TOKEN,
+    localDataDir: process.env.MARKET_DATA_DIR,
+  }));
+  console.log('✅ Market routes registered');
+} catch (e) {
+  console.error('❌ Failed to register market routes:', e);
+}
 app.route('/api/admin', createAdminRoutes({
   cellManager,
   quotaManager,
@@ -142,10 +147,19 @@ const port = Number(process.env.PORT ?? 3001);
 
 console.log(`🦎 Ditto Server starting on port ${port}...`);
 
+const wsHandler = createWebSocketHandler(cellManager);
+
 const server = Bun.serve({
   port,
-  fetch: app.fetch,
-  websocket: createWebSocketHandler(cellManager) as any,
+  fetch(req, svr) {
+    const url = new URL(req.url);
+    if (url.pathname === '/ws' && req.headers.get('upgrade') === 'websocket') {
+      const success = svr.upgrade(req, { data: { clientId: crypto.randomUUID() } });
+      if (success) return undefined as any;
+    }
+    return app.fetch(req, svr);
+  },
+  websocket: wsHandler as any,
 });
 
 console.log(`🦎 Ditto Server running at http://localhost:${port}`);

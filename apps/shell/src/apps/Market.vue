@@ -545,7 +545,7 @@ function sanitizeInput(input: string): string {
 }
 
 function getActionLabel(appId: string): string {
-  const entry = store.listings.find((l) => l.id === appId);
+  const entry = store.apps.get(appId);
   const appType = entry?.manifest?.type ?? 'app';
   const installed = store.isInstalled(appId);
 
@@ -559,7 +559,7 @@ function getActionLabel(appId: string): string {
 }
 
 function getInstallingLabel(appId: string): string {
-  const entry = store.listings.find((l) => l.id === appId);
+  const entry = store.apps.get(appId);
   const appType = entry?.manifest?.type ?? 'app';
   if (appType === 'theme') return '应用中...';
   if (appType === 'widget') return '添加中...';
@@ -575,7 +575,7 @@ async function handleAppAction(appId: string) {
 }
 
 function openApp(appId: string) {
-  const entry = store.listings.find((l) => l.id === appId);
+  const entry = store.apps.get(appId);
   const appType = entry?.manifest?.type ?? 'app';
 
   if (appType === 'theme') {
@@ -604,7 +604,7 @@ function openApp(appId: string) {
 async function handleInstall(appId: string) {
   try {
     await store.installApp(appId);
-    const entry = store.listings.find((l) => l.id === appId);
+    const entry = store.apps.get(appId);
     const appType = entry?.manifest?.type ?? 'app';
     if (appType === 'theme') {
       window.parent.postMessage({
