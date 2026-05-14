@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed, onMounted, onUnmounted } from 'vue';
-import { DDesktop, DTaskbar, DWindow, DStartMenu, DContextMenu, DNotification, DDialog } from '@ditto/ui';
-import { useWindowStore, useAppStore, useNotificationStore, useDialogStore } from '@ditto/services';
+import { DDesktop, DTaskbar, DWindow, DStartMenu, DContextMenu, DNotification, DDialog, DWidgetBoard } from '@ditto/ui';
+import { useWindowStore, useAppStore, useNotificationStore, useDialogStore, useWidgetStore } from '@ditto/services';
 import { getThemeEngine } from '@ditto/theme';
 import type { AppManifest } from '@ditto/shared';
 import FileManager from './apps/FileManager.vue';
@@ -11,6 +11,7 @@ import Market from './apps/Market.vue';
 
 const windowStore = useWindowStore();
 const appStore = useAppStore();
+const widgetStore = useWidgetStore();
 const notificationStore = useNotificationStore();
 const dialogStore = useDialogStore();
 const themeEngine = getThemeEngine();
@@ -19,6 +20,7 @@ const startMenuVisible = ref(false);
 const contextMenu = ref({ visible: false, x: 0, y: 0, items: [] as { label: string; icon?: string; action?: () => void; divider?: boolean }[] });
 const clock = ref('');
 const appIframes = ref<Record<string, string>>({});
+const widgetIframes = ref<Record<string, string>>({});
 
 let clockTimer: ReturnType<typeof setInterval>;
 
@@ -28,16 +30,30 @@ function updateClock() {
 
 function onIPCMessage(event: MessageEvent) {
   if (event.data?.type !== 'ditto-ipc') return;
-  if (event.data?.channel !== 'ui:notify') return;
+
+  const channel = event.data.channel;
   const payload = event.data.payload;
-  if (!payload) return;
-  notificationStore.pushNotification({
-    title: payload.title ?? '',
-    body: payload.body ?? '',
-    type: payload.type ?? 'info',
-    source: event.data.source ?? 'sdk',
-    persistent: false,
-  });
+
+  if (channel === 'ui:notify' && payload) {
+    notificationStore.pushNotification({
+      title: payload.title ?? '',
+      body: payload.body ?? '',
+      type: payload.type ?? 'info',
+      source: event.data.source ?? 'sdk',
+      persistent: false,
+    });
+    return;
+  }
+
+  if (channel === 'theme:apply' && payload?.appId) {
+    applyThemeFromManifest(payload.appId);
+    return;
+  }
+
+  if (channel === 'widget:add' && payload?.appId) {
+    addWidgetToDesktop(payload.appId);
+    return;
+  }
 }
 
 onMounted(() => {
@@ -74,6 +90,14 @@ function getAppIframeUrl(appId: string): string {
   return url;
 }
 
+function getWidgetIframeUrl(appId: string): string {
+  if (widgetIframes.value[appId]) return widgetIframes.value[appId];
+  const serverUrl = window.location.origin;
+  const url = `${serverUrl}/api/apps/${appId}/frontend/index.html`;
+  widgetIframes.value[appId] = url;
+  return url;
+}
+
 function toggleTheme() {
   themeEngine.toggleColorScheme();
 }
@@ -86,7 +110,116 @@ function closeStartMenu() {
   startMenuVisible.value = false;
 }
 
+function applyThemeFromManifest(appId: string) {
+  const serverUrl = window.location.origin;
+  const tokensUrl = `${serverUrl}/api/apps/${appId}/tokens/tokens.json`;
+
+  fetch(tokensUrl)
+    .then((res) => {
+      if (!res.ok) throw new Error('tokens not found');
+      return res.json();
+    })
+    .then((tokens) => {
+      const manifest = appStore.apps.find((a) => a.id === appId);
+      const themeName = manifest?.name ?? appId;
+      const colorScheme = tokens.color?.surface?.base
+        ? isColorDark(tokens.color.surface.base) ? 'dark' : 'light'
+        : 'dark';
+
+      themeEngine.createTheme(appId, themeName, colorScheme, tokens);
+      themeEngine.setTheme(appId);
+      notificationStore.pushNotification({
+        title: '主题已应用',
+        body: `已切换到「${themeName}」主题`,
+        type: 'success',
+        source: 'theme',
+        persistent: false,
+      });
+    })
+    .catch(() => {
+      notificationStore.pushNotification({
+        title: '主题应用失败',
+        body: '无法加载主题配色数据',
+        type: 'error',
+        source: 'theme',
+        persistent: false,
+      });
+    });
+}
+
+function isColorDark(hex: string): boolean {
+  const c = hex.replace('#', '');
+  const r = parseInt(c.substring(0, 2), 16);
+  const g = parseInt(c.substring(2, 4), 16);
+  const b = parseInt(c.substring(4, 6), 16);
+  const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return luminance < 0.5;
+}
+
+function addWidgetToDesktop(appId: string) {
+  const manifest = appStore.apps.find((a) => a.id === appId);
+  if (!manifest) return;
+
+  const existing = widgetStore.registeredWidgets.find((w) => w.id === appId);
+  if (!existing) {
+    widgetStore.registerWidget({
+      id: appId,
+      name: manifest.name,
+      description: manifest.description,
+      icon: manifest.icon,
+      entry: manifest.entry,
+      size: 'medium',
+      minWidth: manifest.window?.minWidth ?? 200,
+      minHeight: manifest.window?.minHeight ?? 150,
+      permissions: manifest.permissions,
+      type: 'widget',
+    });
+  }
+
+  const running = widgetStore.instances.find((i) => i.widgetId === appId);
+  if (running) {
+    notificationStore.pushNotification({
+      title: '小组件已在桌面',
+      body: `「${manifest.name}」已添加到桌面`,
+      type: 'info',
+      source: 'widget',
+      persistent: false,
+    });
+    return;
+  }
+
+  const offsetX = (widgetStore.instances.length % 4) * 340 + 20;
+  const offsetY = Math.floor(widgetStore.instances.length / 4) * 180 + 20;
+
+  widgetStore.addWidget(appId, { x: offsetX, y: offsetY });
+
+  notificationStore.pushNotification({
+    title: '小组件已添加',
+    body: `「${manifest.name}」已添加到桌面`,
+    type: 'success',
+    source: 'widget',
+    persistent: false,
+  });
+}
+
 async function launchApp(appId: string) {
+  const manifest = appStore.apps.find((a) => a.id === appId);
+  if (!manifest) return;
+
+  const appType = manifest.type ?? 'app';
+
+  if (appType === 'theme') {
+    applyThemeFromManifest(appId);
+    closeStartMenu();
+    return;
+  }
+
+  if (appType === 'widget') {
+    addWidgetToDesktop(appId);
+    closeStartMenu();
+    return;
+  }
+
   await appStore.launchApp(appId);
   closeStartMenu();
 }
@@ -111,6 +244,18 @@ function closeContextMenu() {
 }
 
 function onTaskbarAppClick(app: AppManifest) {
+  const appType = app.type ?? 'app';
+
+  if (appType === 'theme') {
+    applyThemeFromManifest(app.id);
+    return;
+  }
+
+  if (appType === 'widget') {
+    addWidgetToDesktop(app.id);
+    return;
+  }
+
   const existing = windowStore.windows.find((w) => w.appId === app.id);
   if (existing) {
     if (existing.state === 'minimized') {
@@ -151,6 +296,17 @@ function onDialogCancel() {
 
 <template>
   <DDesktop @contextmenu="onDesktopContextMenu">
+    <DWidgetBoard>
+      <template #default="{ instance }">
+        <iframe
+          :src="getWidgetIframeUrl(instance.widgetId)"
+          class="widget-iframe"
+          sandbox="allow-scripts allow-forms allow-same-origin allow-popups allow-modals"
+          allow="clipboard-read; clipboard-write"
+        ></iframe>
+      </template>
+    </DWidgetBoard>
+
     <DWindow
       v-for="win in windowStore.visibleWindows"
       :key="win.id"
@@ -237,6 +393,14 @@ html, body {
   border: none;
   display: block;
   background: white;
+}
+
+.widget-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+  background: transparent;
 }
 
 .start-btn {

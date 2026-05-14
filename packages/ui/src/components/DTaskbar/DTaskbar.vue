@@ -1,9 +1,14 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useWindowStore, useAppStore } from '@ditto/services';
 import type { AppManifest } from '@ditto/shared';
 
 const windowStore = useWindowStore();
 const appStore = useAppStore();
+
+const taskbarApps = computed(() =>
+  appStore.pinnedApps.filter((a) => ((a as any).type ?? 'app') !== 'theme')
+);
 
 const emit = defineEmits<{
   (e: 'appClick', app: AppManifest): void;
@@ -33,7 +38,7 @@ function onAppClick(app: AppManifest) {
     <div class="d-taskbar__divider" />
     <div class="d-taskbar__apps">
       <button
-        v-for="app in appStore.pinnedApps"
+        v-for="app in taskbarApps"
         :key="app.id"
         class="d-taskbar__app-btn"
         :class="{

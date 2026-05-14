@@ -13,8 +13,12 @@ const searchQuery = ref('');
 
 const filteredApps = computed(() => {
   const q = searchQuery.value.toLowerCase().trim();
-  if (!q) return appStore.apps;
-  return appStore.apps.filter((a) =>
+  const apps = appStore.apps.filter((a) => {
+    const t = (a as any).type ?? 'app';
+    return t !== 'theme';
+  });
+  if (!q) return apps;
+  return apps.filter((a) =>
     a.name.toLowerCase().includes(q) || a.id.toLowerCase().includes(q)
   );
 });

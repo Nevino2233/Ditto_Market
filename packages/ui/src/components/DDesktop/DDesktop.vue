@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import { useWindowStore, useAppStore } from '@ditto/services';
 import type { AppManifest } from '@ditto/shared';
 
@@ -23,6 +24,13 @@ const emit = defineEmits<{
 
 const windowStore = useWindowStore();
 const appStore = useAppStore();
+
+const desktopApps = computed(() =>
+  appStore.apps.filter((app) => {
+    const t = (app as any).type ?? 'app';
+    return t !== 'theme';
+  })
+);
 
 function onDesktopClick(e: MouseEvent) {
   if ((e.target as HTMLElement).classList.contains('d-desktop') || (e.target as HTMLElement).classList.contains('d-desktop__icons')) {
@@ -56,7 +64,7 @@ function onContextMenu(e: MouseEvent) {
       :class="{ 'd-desktop__icons--grid': columns > 0 }"
     >
       <div
-        v-for="app in appStore.apps"
+        v-for="app in desktopApps"
         :key="app.id"
         class="d-desktop__icon"
         :style="{ width: `${iconSize}px`, height: `${iconSize}px` }"

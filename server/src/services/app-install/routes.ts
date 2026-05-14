@@ -177,5 +177,28 @@ export function createInstallRoutes(cellManager: AppCellManager, appsDir: string
     return c.body(data);
   });
 
+  router.get('/:appId/tokens/*', async (c) => {
+    const appId = c.req.param('appId');
+    const filePath = c.req.path.replace(`/api/apps/${appId}/tokens/`, '');
+
+    const installed = cellManager.getInstalledApp(appId);
+    if (!installed) {
+      return c.json({ error: 'App not found' }, 404);
+    }
+
+    const appDir = path.dirname(installed.backendDir);
+    const tokensPath = path.join(appDir, 'tokens', filePath);
+
+    if (!fs.existsSync(tokensPath)) {
+      return c.json({ error: 'Tokens file not found' }, 404);
+    }
+
+    const data = fs.readFileSync(tokensPath);
+    c.header('Content-Type', 'application/json');
+    c.header('Cache-Control', 'no-cache');
+
+    return c.body(data);
+  });
+
   return router;
 }

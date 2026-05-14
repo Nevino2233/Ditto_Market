@@ -96,7 +96,7 @@
                 :class="store.isInstalled(appId) ? 'm-btn--installed' : 'm-btn--primary'"
                 @click.stop="handleAppAction(appId)"
               >
-                {{ store.isInstalled(appId) ? '打开' : '安装' }}
+                {{ getActionLabel(appId) }}
               </button>
             </div>
           </div>
@@ -222,7 +222,7 @@
               @click.stop="handleAppAction(app.id)"
               :disabled="store.installingAppId === app.id"
             >
-              {{ store.installingAppId === app.id ? '安装中...' : store.isInstalled(app.id) ? '打开' : '安装' }}
+              {{ store.installingAppId === app.id ? getInstallingLabel(app.id) : getActionLabel(app.id) }}
             </button>
           </div>
         </div>
@@ -256,7 +256,7 @@
               @click="handleAppAction(store.selectedApp.id)"
               :disabled="store.installingAppId === store.selectedApp.id"
             >
-              {{ store.installingAppId === store.selectedApp.id ? '安装中...' : store.isInstalled(store.selectedApp.id) ? '打开' : '安装' }}
+              {{ store.installingAppId === store.selectedApp.id ? getInstallingLabel(store.selectedApp.id) : getActionLabel(store.selectedApp.id) }}
             </button>
           </div>
 
@@ -353,7 +353,7 @@
               <div class="m-card__meta">v{{ app.installedVersion }}</div>
             </div>
             <div class="m-card__actions">
-              <button class="m-btn m-btn--primary m-btn--sm" @click="openApp(app.appId)">打开</button>
+              <button class="m-btn m-btn--primary m-btn--sm" @click="openApp(app.appId)">{{ getActionLabel(app.appId) }}</button>
               <button v-if="app.hasUpdate" class="m-btn m-btn--accent m-btn--sm" @click="handleInstall(app.appId)">更新</button>
               <button class="m-btn m-btn--ghost m-btn--sm" @click="uninstallApp(app.appId)">卸载</button>
             </div>
@@ -544,6 +544,28 @@ function sanitizeInput(input: string): string {
   return input.replace(/[<>"'&]/g, '');
 }
 
+function getActionLabel(appId: string): string {
+  const entry = store.listings.find((l) => l.id === appId);
+  const appType = entry?.manifest?.type ?? 'app';
+  const installed = store.isInstalled(appId);
+
+  if (appType === 'theme') {
+    return installed ? '应用主题' : '安装并应用';
+  }
+  if (appType === 'widget') {
+    return installed ? '添加到桌面' : '安装并添加';
+  }
+  return installed ? '打开' : '安装';
+}
+
+function getInstallingLabel(appId: string): string {
+  const entry = store.listings.find((l) => l.id === appId);
+  const appType = entry?.manifest?.type ?? 'app';
+  if (appType === 'theme') return '应用中...';
+  if (appType === 'widget') return '添加中...';
+  return '安装中...';
+}
+
 async function handleAppAction(appId: string) {
   if (store.isInstalled(appId)) {
     openApp(appId);
@@ -553,12 +575,52 @@ async function handleAppAction(appId: string) {
 }
 
 function openApp(appId: string) {
+  const entry = store.listings.find((l) => l.id === appId);
+  const appType = entry?.manifest?.type ?? 'app';
+
+  if (appType === 'theme') {
+    window.parent.postMessage({
+      type: 'ditto-ipc',
+      channel: 'theme:apply',
+      source: 'market',
+      payload: { appId },
+    }, '*');
+    return;
+  }
+
+  if (appType === 'widget') {
+    window.parent.postMessage({
+      type: 'ditto-ipc',
+      channel: 'widget:add',
+      source: 'market',
+      payload: { appId },
+    }, '*');
+    return;
+  }
+
   appStore.launchApp(appId);
 }
 
 async function handleInstall(appId: string) {
   try {
     await store.installApp(appId);
+    const entry = store.listings.find((l) => l.id === appId);
+    const appType = entry?.manifest?.type ?? 'app';
+    if (appType === 'theme') {
+      window.parent.postMessage({
+        type: 'ditto-ipc',
+        channel: 'theme:apply',
+        source: 'market',
+        payload: { appId },
+      }, '*');
+    } else if (appType === 'widget') {
+      window.parent.postMessage({
+        type: 'ditto-ipc',
+        channel: 'widget:add',
+        source: 'market',
+        payload: { appId },
+      }, '*');
+    }
   } catch (e) {
     const msg = e instanceof Error ? e.message : '安装失败';
     if (msg.includes('No download URL')) {

@@ -1,25 +1,19 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 import { useWidgetStore } from '@ditto/services';
-import { useDrag } from '../../composables/useDrag';
-import type { WidgetSize } from '@ditto/shared';
-
-const SIZE_MAP: Record<WidgetSize, { width: number; height: number }> = {
-  small: { width: 160, height: 160 },
-  medium: { width: 320, height: 160 },
-  large: { width: 320, height: 320 },
-};
 
 const widgetStore = useWidgetStore();
 const instances = computed(() => widgetStore.runningInstances);
 
 function getWidgetStyle(inst: typeof instances.value[0]) {
-  const dims = SIZE_MAP[inst.size];
+  const manifest = inst.manifest;
+  const w = manifest.minWidth || 320;
+  const h = manifest.minHeight || 160;
   return {
     left: `${inst.position.x}px`,
     top: `${inst.position.y}px`,
-    width: `${dims.width}px`,
-    height: `${dims.height}px`,
+    width: `${w}px`,
+    height: `${h}px`,
   };
 }
 
@@ -34,22 +28,17 @@ function onRemove(instanceId: string) {
       v-for="inst in instances"
       :key="inst.id"
       class="d-widget"
-      :class="`d-widget--${inst.size}`"
       :style="getWidgetStyle(inst)"
     >
-      <div class="d-widget__header">
-        <span class="d-widget__icon">{{ inst.manifest.icon || '📋' }}</span>
-        <span class="d-widget__name">{{ inst.manifest.name }}</span>
-        <button class="d-widget__close" @click="onRemove(inst.id)">×</button>
-      </div>
       <div class="d-widget__body">
-        <slot :name="inst.widgetId" :instance="inst">
+        <slot :instance="inst" :widgetId="inst.widgetId">
           <div class="d-widget__placeholder">
             <span>{{ inst.manifest.icon || '📋' }}</span>
             <span>{{ inst.manifest.name }}</span>
           </div>
         </slot>
       </div>
+      <button class="d-widget__close" title="移除小组件" @click.stop="onRemove(inst.id)">×</button>
     </div>
   </div>
 </template>
@@ -59,49 +48,33 @@ function onRemove(instanceId: string) {
   position: absolute;
   inset: 0;
   pointer-events: none;
+  z-index: 1;
 }
 
 .d-widget {
   position: absolute;
   display: flex;
   flex-direction: column;
-  background: var(--ditto-color-surface-overlay, #ffffff);
+  background: var(--ditto-color-surface-overlay, #1e293b);
   border-radius: var(--ditto-radius-card, 12px);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
   overflow: hidden;
   pointer-events: auto;
-  border: 1px solid var(--ditto-color-border-subtle, rgba(0, 0, 0, 0.06));
+  border: 1px solid var(--ditto-color-border-subtle, rgba(255, 255, 255, 0.06));
   transition: box-shadow 150ms ease;
 }
 
 .d-widget:hover {
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.25);
 }
 
-.d-widget__header {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 10px;
-  background: var(--ditto-color-surface-raised, #f8fafc);
-  border-bottom: 1px solid var(--ditto-color-border-subtle, rgba(0, 0, 0, 0.04));
-  cursor: grab;
-  user-select: none;
+.d-widget:hover .d-widget__close {
+  opacity: 1;
 }
-
-.d-widget__icon { font-size: 12px; }
-.d-widget__name { flex: 1; font-size: 11px; font-weight: 500; color: var(--ditto-color-text-secondary, #64748b); }
-
-.d-widget__close {
-  background: none; border: none; cursor: pointer;
-  font-size: 14px; color: var(--ditto-color-text-disabled, #94a3b8);
-  padding: 0 2px; line-height: 1; transition: color 100ms;
-}
-.d-widget__close:hover { color: var(--ditto-color-text-primary, #0f172a); }
 
 .d-widget__body {
   flex: 1;
-  overflow: auto;
+  overflow: hidden;
   position: relative;
 }
 
@@ -114,5 +87,32 @@ function onRemove(instanceId: string) {
   gap: 6px;
   color: var(--ditto-color-text-disabled, #94a3b8);
   font-size: 12px;
+}
+
+.d-widget__close {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.5);
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0;
+  line-height: 1;
+  opacity: 0;
+  transition: opacity 150ms, background 100ms, color 100ms;
+  z-index: 10;
+}
+
+.d-widget__close:hover {
+  background: var(--ditto-color-semantic-error, #ef4444);
+  color: #fff;
 }
 </style>
