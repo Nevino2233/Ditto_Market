@@ -371,4 +371,33 @@ onMounted(() => {
   .d-window__rh-e, .d-window__rh-w { width: 10px; }
   .d-window__rh-ne, .d-window__rh-nw, .d-window__rh-se, .d-window__rh-sw { width: 18px; height: 18px; }
 }
+
+@media (max-width: 768px) {
+  .d-window {
+    left: 0 !important;
+    top: 0 !important;
+    width: 100vw !important;
+    height: calc(100vh - 60px) !important;
+    border-radius: 0;
+    border: none;
+  }
+
+  .d-window__titlebar {
+    height: 44px;
+  }
+
+  .d-window__btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .d-window__btn--close {
+    width: 44px;
+    height: 44px;
+  }
+
+  .d-window__rh {
+    display: none;
+  }
+}
 </style>

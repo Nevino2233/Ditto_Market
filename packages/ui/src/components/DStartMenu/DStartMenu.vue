@@ -173,4 +173,43 @@ function onOverlayClick() {
   color: var(--ditto-color-text-disabled, #94a3b8);
   font-size: 14px;
 }
+
+@media (max-width: 768px) {
+  .d-start-menu-overlay {
+    padding-bottom: 60px;
+  }
+
+  .d-start-menu {
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    max-height: 80vh;
+  }
+
+  .d-start-menu__search {
+    padding: 12px 16px;
+  }
+
+  .d-start-menu__search-input {
+    padding: 14px 16px;
+    font-size: 16px;
+    border-radius: 10px;
+  }
+
+  .d-start-menu__app {
+    padding: 14px 16px;
+    gap: 14px;
+  }
+
+  .d-start-menu__app-icon {
+    font-size: 32px;
+  }
+
+  .d-start-menu__app-name {
+    font-size: 15px;
+  }
+
+  .d-start-menu__app-desc {
+    font-size: 13px;
+  }
+}
 </style>

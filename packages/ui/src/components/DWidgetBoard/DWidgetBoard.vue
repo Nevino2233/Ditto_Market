@@ -115,4 +115,30 @@ function onRemove(instanceId: string) {
   background: var(--ditto-color-semantic-error, #ef4444);
   color: #fff;
 }
+
+@media (max-width: 768px) {
+  .d-widget-board {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 8px;
+    overflow-y: auto;
+  }
+
+  .d-widget {
+    position: relative;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 120px;
+  }
+
+  .d-widget__close {
+    opacity: 1;
+    width: 28px;
+    height: 28px;
+    font-size: 16px;
+  }
+}
 </style>

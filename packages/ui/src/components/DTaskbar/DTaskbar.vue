@@ -150,7 +150,7 @@ function onAppClick(app: AppManifest) {
   line-height: 1;
 }
 
-@media (pointer: coarse) and (max-width: 768px) {
+@media (max-width: 768px) {
   .d-taskbar {
     height: 60px;
     padding: 0 4px;
@@ -158,7 +158,7 @@ function onAppClick(app: AppManifest) {
   }
 
   .d-taskbar__start {
-    display: none;
+    display: flex;
   }
 
   .d-taskbar__divider {
@@ -179,7 +179,9 @@ function onAppClick(app: AppManifest) {
   }
 
   .d-taskbar__tray {
-    display: none;
+    display: flex;
+    gap: 4px;
+    padding: 0 4px;
   }
 }
 </style>

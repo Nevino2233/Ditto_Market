@@ -330,7 +330,10 @@ function onDialogCancel() {
   <DTaskbar>
     <template #default>
       <button class="start-btn" @click="toggleStartMenu" title="开始菜单">
-        🏠
+        <span class="start-btn__home">🏠</span>
+        <span class="start-btn__hamburger">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="3" y1="5" x2="17" y2="5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="15" x2="17" y2="15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </span>
       </button>
     </template>
     <template #tray>
@@ -415,6 +418,11 @@ html, body {
   cursor: pointer;
   font-size: 20px;
   transition: background 120ms, transform 100ms;
+  color: var(--ditto-color-text-primary, #0f172a);
+}
+
+.start-btn__hamburger {
+  display: none;
 }
 
 .start-btn:hover { background: rgba(0, 0, 0, 0.06); }
@@ -435,5 +443,37 @@ html, body {
 .tray-clock {
   font-size: 12px;
   font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .start-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 22px;
+  }
+
+  .start-btn__home {
+    display: none;
+  }
+
+  .start-btn__hamburger {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tray-btn {
+    font-size: 18px;
+    padding: 8px;
+    min-width: 44px;
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .tray-clock {
+    font-size: 13px;
+  }
 }
 </style>

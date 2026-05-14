@@ -140,4 +140,28 @@ function onContextMenu(e: MouseEvent) {
   text-overflow: ellipsis;
   max-width: calc(100% - 8px);
 }
+
+@media (max-width: 768px) {
+  .d-desktop {
+    bottom: 60px;
+  }
+
+  .d-desktop__icons {
+    gap: 4px;
+    padding: 8px;
+  }
+
+  .d-desktop__icon {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .d-desktop__icon-img {
+    font-size: 24px;
+  }
+
+  .d-desktop__icon-label {
+    font-size: 9px;
+  }
+}
 </style>
